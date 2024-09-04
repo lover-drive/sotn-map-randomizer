@@ -14,6 +14,7 @@ function map_randomizer ()
 	local room_x = watch(0x973F0, 's32')
 	local room_width = watch(0x0730C8, 'u32')
 	local map_offset_y = watch(0x0973F5, 's8')
+	local status = watch(0x03C734, 's8')
 
 	local edge = nil
 	local opposite_edge = nil
@@ -83,7 +84,10 @@ function map_randomizer ()
 	end
 	
 	local function tick()
+		if status.current_value ~= 2 then return end
 		if not room_id.prev_value then return end
+		mainmemory.write_u8(0x13B668, 0)
+		-- mute music to prevent jarring transitions
 
 		edge = get_relative_room_x() < 0 and 'west' or 'east'
 		opposite_edge = edge == 'west' and 'east' or 'west'
@@ -104,13 +108,18 @@ function map_randomizer ()
 	end
 	
 	local function draw_gui()
+		if status.current_value ~= 2 then return end
 		gui.clearGraphics()
 		gui.text(32, 32, 'Map randomizer v0.1 by Alice Loverdrive')
 		gui.text(32, 48, '[V] set transition to vanilla')
 		gui.text(32, 64, '[R] reroll next transition')
+		gui.text(32, 128, mainmemory.read_s32_le(0x03C9A0))
+		gui.text(32, 128+16, mainmemory.read_s32_le(0x03C734))
+		gui.text(32, 128+32, mainmemory.read_s32_le(0x03C9A8))
 	end
 
 	local function process_input()
+		if status.current_value ~= 2 then return end
 		local pressed = input.get()
 		if pressed.V and next_state ~= 'VANILLA' then
 			connections[next_state] = nil
