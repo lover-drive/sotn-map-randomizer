@@ -135,12 +135,22 @@ function map_randomizer ()
 	end
 
 	for i, filename in ipairs(read_directory('states')) do
+		for _, room in ipairs(forbidden_rooms) do
+			if string.find(filename, room) then
+				goto continue
+			end
+		end
 		if string.find(filename, "east") then
 			table.insert(states.east, filename)
 		elseif string.find(filename, "west") then 
 			table.insert(states.west, filename)
 		end
+
+		::continue::
 	end
+
+	print(states.east)
+	print(states.west)
 
 	for line in read('addresses/alucard.wch') do
 		local separated = split(line, '%s')
