@@ -106,6 +106,8 @@ function map_randomizer ()
 	local function draw_gui()
 		gui.clearGraphics()
 		gui.text(32, 32, 'Map randomizer v0.1 by Alice Loverdrive')
+		gui.text(32, 48, '[V] set transition to vanilla')
+		gui.text(32, 64, '[R] reroll next transition')
 	end
 
 	local function process_input()
