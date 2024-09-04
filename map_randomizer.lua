@@ -52,7 +52,7 @@ function map_randomizer ()
 
 	local function teleport(state)
 		save_data()
-		savestate.load(state)
+		savestate.load(state, true)
 		restore_data()
 		emu.frameadvance()
 		restore_data()
@@ -70,7 +70,6 @@ function map_randomizer ()
 		next_state = connections[current_state]
 
 		if not next_state then
-			gui.addmessage(edge)
 			if #states[edge] > 0 then
 				local index = math.random(#states[opposite_edge])
 				next_state = states[opposite_edge][index]
@@ -106,10 +105,7 @@ function map_randomizer ()
 	
 	local function draw_gui()
 		gui.clearGraphics()
-		gui.drawText(32, 32, current_frame < paused_until and 'paused' or 'not paused')
-		-- gui.drawText(32, 32, prev_state)
-		gui.drawText(32, 32+16, current_state)
-		gui.drawText(32, 32+32, next_state)
+		gui.text(32, 32, 'Map randomizer v0.1 by Alice Loverdrive')
 	end
 
 	local function process_input()
